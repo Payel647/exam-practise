@@ -1,3 +1,4 @@
+// Stack implementation using linked list
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -6,86 +7,84 @@ struct Node {
     struct Node* next;
 };
 
+// Function to create a new node
 struct Node* createNode(int data) {
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    if (!newNode) {
-        printf("Memory allocation failed\n");
-        exit(1);
-    }
     newNode->data = data;
     newNode->next = NULL;
     return newNode;
 }
 
-
+// Function to check if the stack is empty
 int isEmpty(struct Node* top) {
     return top == NULL;
 }
 
-void push(struct Node** top, int data) {
+// Function to push an element onto the stack
+struct Node* push(struct Node* top, int data) {
     struct Node* newNode = createNode(data);
-    newNode->next = *top;
-    *top = newNode;
-    printf("Pushed %d onto the stack\n", data);
+    newNode->next = top;
+    top = newNode;
+    return top;
 }
 
-
-int pop(struct Node** top) {
-    if (isEmpty(*top)) {
+// Function to pop an element from the stack
+struct Node* pop(struct Node* top, int* poppedData) {
+    if (isEmpty(top)) {
         printf("Stack underflow\n");
-        exit(1);
+        return top;
     }
-    struct Node* temp = *top;
-    int poppedData = temp->data;
-    *top = temp->next;
+    struct Node* temp = top;
+    *poppedData = top->data;
+    top = top->next;
     free(temp);
-    return poppedData;
+    return top;
 }
 
-
+// Function to peek the top element of the stack
 int peek(struct Node* top) {
     if (isEmpty(top)) {
         printf("Stack is empty\n");
-        exit(1);
+        return -1;
     }
     return top->data;
 }
 
-
-void display(struct Node* top) {
-    if (isEmpty(top)) {
-        printf("Stack is empty\n");
-        return;
-    }
+// Function to traverse and print the stack
+void traverse(struct Node* top) {
     struct Node* temp = top;
-    printf("Stack elements: ");
-    while (temp) {
-        printf("%d ", temp->data);
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
         temp = temp->next;
     }
-    printf("\n");
+    printf("NULL\n");
 }
 
-
 int main() {
-    struct Node* stack = NULL;
+    struct Node* top = NULL;
+    int poppedData;
 
-    push(&stack, 10);
-    push(&stack, 20);
-    push(&stack, 30);
+    // Push elements onto the stack
+    top = push(top, 10);
+    top = push(top, 20);
+    top = push(top, 30);
 
-   
-    display(stack);
+    // Traverse and print the stack
+    printf("Stack: ");
+    traverse(top);
 
-    
-    printf("Top element: %d\n", peek(stack));
+    // Peek the top element
+    printf("Top element is %d\n", peek(top));
 
-    
-    printf("Popped element: %d\n", pop(&stack));
-    printf("Popped element: %d\n", pop(&stack));
+    // Pop elements from the stack
+    top = pop(top, &poppedData);
+    printf("Popped element is %d\n", poppedData);
+    top = pop(top, &poppedData);
+    printf("Popped element is %d\n", poppedData);
 
-    
-    display(stack);
+    // Traverse and print the stack after popping
+    printf("Stack after popping: ");
+    traverse(top);
 
     return 0;
 }
